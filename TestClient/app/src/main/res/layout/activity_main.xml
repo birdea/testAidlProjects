@@ -6,40 +6,104 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Start Service"
-        android:onClick="onClickView"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Service"
+            android:enabled="false"
+            android:onClick="onClickView"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Service"
+            android:enabled="false"
+            android:onClick="onClickView"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bind Service"
+            android:onClick="onClickView"/>
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickView"
+            android:text="Unbind Service" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Agent"
+            android:onClick="onClickView"/>
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Agent"
+            android:onClick="onClickView"/>
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bind Service"
+        android:text="Stop Activity"
         android:onClick="onClickView"/>
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Unbind Service"
-        android:onClick="onClickView"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WWD ON"
+            android:onClick="onClickView"/>
+
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WWD OFF"
+            android:onClick="onClickView"/>
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/button10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Value!"
-        android:onClick="onClickView"/>
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Service"
+        android:text="NOTIFY AGENT STATUS"
         android:onClick="onClickView"/>
 
     <TextView

@@ -6,12 +6,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.skt.aicd.testservice.IAidlService;
+import com.skt.vii.service.IViiAgentControl;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,16 +35,31 @@ public class MainActivity extends AppCompatActivity {
                 startTestService();
                 break;
             case R.id.button2:
-                bindTestService();
+                stopTestService();
                 break;
             case R.id.button3:
-                unbindTestService();
+                bindTestService();
                 break;
             case R.id.button4:
-                getValueOnBindTestService();
+                unbindTestService();
                 break;
             case R.id.button5:
-                stopTestService();
+                startAgent();
+                break;
+            case R.id.button6:
+                stopAgent();
+                break;
+            case R.id.button7:
+                stopActivity();
+                break;
+            case R.id.button8:
+                setWakeWordDetector(true);
+                break;
+            case R.id.button9:
+                setWakeWordDetector(false);
+                break;
+            case R.id.button10:
+                notifyAgentStatus();
                 break;
             default:
                 break;
@@ -62,23 +76,49 @@ public class MainActivity extends AppCompatActivity {
         stopService(getServiceIntent());
     }
 
-    private void getValueOnBindTestService() {
-        L.d(TAG, "getValueOnBindTestService()");
-        if (iAidlService == null) {
-            textView.setText("n/a");
-            return;
-        }
-
+    private void stopAgent() {
+        L.d(TAG, "stopAgent()");
         try {
-            final int value = iAidlService.getValue();
-            L.d(TAG, "getValueOnBindTestService() num:"+value);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    textView.setText(String.valueOf(value));
-                }
-            });
-        } catch (RemoteException e) {
+            TestBindService.clientControl.stopAgent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startAgent() {
+        L.d(TAG, "startAgent()");
+        try {
+            TestBindService.clientControl.startAgent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopActivity() {
+        L.d(TAG, "stopActivity()");
+        try {
+            TestBindService.clientControl.stopActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setWakeWordDetector(boolean enable) {
+        L.d(TAG, "setWakeWordDetector() enable:"+enable);
+        try {
+            TestBindService.clientControl.setWakeWordDetector(enable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyAgentStatus() {
+        L.d(TAG, "notifyAgentStatus()");
+        try {
+            int status = 0;
+            String service = "media";
+            TestBindService.clientControl.onAgentStatus(status, service);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -91,32 +131,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindTestService() {
         L.d(TAG, "bindTestService()");
-        boolean result = bindService(getServiceIntent(), serviceConnection, Context.BIND_AUTO_CREATE);
-        L.d(TAG, "bindTestService() result:"+result);
+       // boolean result = bindService(getServiceIntent(), serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void unbindTestService() {
         L.d(TAG, "unbindTestService()");
-        try {
+        /*try {
             unbindService(serviceConnection);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
-    IAidlService iAidlService = null;
+    /*IViiAgentControl iAidlService = TestBindService.clientControl;
 
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             L.d(TAG, "onServiceConnected() name:"+name+", IBinder:"+service);
-            iAidlService = IAidlService.Stub.asInterface(service);
-            L.d(TAG, "getTestService() instance:"+ iAidlService);
+            iAidlService = IViiAgentControl.Stub.asInterface(service);
+            //L.d(TAG, "getTestService() instance:"+ iAidlService);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             L.d(TAG, "onServiceDisconnected() name:"+name);
+            iAidlService = null;
         }
-    };
+    };*/
 }

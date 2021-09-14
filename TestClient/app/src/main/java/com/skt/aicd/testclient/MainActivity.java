@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.skt.aicd.testservice.IAidlService;
+import com.skt.vii.service.IViiAgentControl;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,16 +36,31 @@ public class MainActivity extends AppCompatActivity {
                 startTestService();
                 break;
             case R.id.button2:
-                bindTestService();
+                stopTestService();
                 break;
             case R.id.button3:
-                unbindTestService();
+                bindTestService();
                 break;
             case R.id.button4:
-                getValueOnBindTestService();
+                unbindTestService();
                 break;
             case R.id.button5:
-                stopTestService();
+                startAgent();
+                break;
+            case R.id.button6:
+                stopAgent();
+                break;
+            case R.id.button7:
+                stopActivity();
+                break;
+            case R.id.button8:
+                setWakeWordDetector(true);
+                break;
+            case R.id.button9:
+                setWakeWordDetector(false);
+                break;
+            case R.id.button10:
+                notifyAgentStatus();
                 break;
             default:
                 break;
@@ -62,23 +77,49 @@ public class MainActivity extends AppCompatActivity {
         stopService(getServiceIntent());
     }
 
-    private void getValueOnBindTestService() {
-        L.d(TAG, "getValueOnBindTestService()");
-        if (iAidlService == null) {
-            textView.setText("n/a");
-            return;
-        }
-
+    private void stopAgent() {
+        L.d(TAG, "stopAgent()");
         try {
-            final int value = iAidlService.getValue();
-            L.d(TAG, "getValueOnBindTestService() num:"+value);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    textView.setText(String.valueOf(value));
-                }
-            });
-        } catch (RemoteException e) {
+            iServerService.stopAgent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startAgent() {
+        L.d(TAG, "startAgent()");
+        try {
+            iServerService.startAgent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopActivity() {
+        L.d(TAG, "stopActivity()");
+        try {
+            iServerService.stopActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setWakeWordDetector(boolean enable) {
+        L.d(TAG, "setWakeWordDetector() enable:"+enable);
+        try {
+            iServerService.setWakeWordDetector(enable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyAgentStatus() {
+        L.d(TAG, "notifyAgentStatus()");
+        try {
+            int status = 0;
+            String service = "media";
+            iServerService.onAgentStatus(status, service);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -86,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent getServiceIntent() {
         Intent intent = new Intent();
         intent.setComponent(componentName);
+        intent.setAction("...");
         return intent;
     }
 
@@ -104,20 +146,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    IAidlService iAidlService = null;
+    IViiAgentControl iClientService = new IViiAgentControl.Stub() {
+
+        private int mNumber = 0;
+
+        @Override
+        public void startAgent() throws RemoteException {
+            L.d(TAG, "startAgent() mNumber:"+mNumber++);
+        }
+
+        @Override
+        public void stopAgent() throws RemoteException {
+            L.d(TAG, "stopAgent() mNumber:"+mNumber++);
+        }
+
+        @Override
+        public void stopActivity() throws RemoteException {
+            L.d(TAG, "stopActivity()");
+        }
+
+        @Override
+        public void onAgentStatus(int status, String service) throws RemoteException {
+            L.i(TAG,"onAgentStatus() status:"+status+", service:"+service);
+            L.d(TAG, "onAgentStatus() mNumber:"+mNumber++);
+        }
+
+        @Override
+        public void setWakeWordDetector(boolean enable) throws RemoteException {
+            L.i(TAG,"setWakeWordDetector() enable:"+enable);
+        }
+
+        @Override
+        public void registerAgentControl(IViiAgentControl agent) throws RemoteException {
+            L.i(TAG,"registerAgentControl() agent:"+agent);
+        }
+
+        @Override
+        public void unregisterAgentControl(IViiAgentControl agent) throws RemoteException {
+            L.i(TAG,"unregisterAgentControl() agent:"+agent);
+        }
+    };
+
+    IViiAgentControl iServerService = null;
 
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             L.d(TAG, "onServiceConnected() name:"+name+", IBinder:"+service);
-            iAidlService = IAidlService.Stub.asInterface(service);
-            //mTestBindService = ((TestBindService.MyBinder) service).getTestService();
-            L.d(TAG, "getTestService() instance:"+ iAidlService);
+            iServerService = IViiAgentControl.Stub.asInterface(service);
+            try {
+                iServerService.registerAgentControl(iClientService);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //L.d(TAG, "getTestService() instance:"+ iAidlService);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             L.d(TAG, "onServiceDisconnected() name:"+name);
+            iServerService = null;
         }
     };
 }
