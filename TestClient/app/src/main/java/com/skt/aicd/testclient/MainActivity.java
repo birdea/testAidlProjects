@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
                 unbindTestService();
                 break;
             case R.id.button5:
-                startAgent();
+                activateAgent();
                 break;
             case R.id.button6:
-                stopAgent();
+                deactivateAgent();
                 break;
             case R.id.button7:
                 stopActivity();
@@ -77,19 +77,19 @@ public class MainActivity extends AppCompatActivity {
         stopService(getServiceIntent());
     }
 
-    private void stopAgent() {
-        L.d(TAG, "stopAgent()");
+    private void deactivateAgent() {
+        L.d(TAG, "deactivateAgent()");
         try {
-            iServerService.stopAgent();
+            iServerService.deactivateAgent();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void startAgent() {
-        L.d(TAG, "startAgent()");
+    private void activateAgent() {
+        L.d(TAG, "activateAgent()");
         try {
-            iServerService.startAgent();
+            iServerService.activateAgent();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,7 +107,11 @@ public class MainActivity extends AppCompatActivity {
     private void setWakeWordDetector(boolean enable) {
         L.d(TAG, "setWakeWordDetector() enable:"+enable);
         try {
-            iServerService.setWakeWordDetector(enable);
+            if (enable) {
+                iServerService.activateWakeWordDetector();
+            } else {
+                iServerService.deactivateWakeWordDetector();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,13 +155,23 @@ public class MainActivity extends AppCompatActivity {
         private int mNumber = 0;
 
         @Override
-        public void startAgent() throws RemoteException {
-            L.d(TAG, "startAgent() mNumber:"+mNumber++);
+        public void activateAgent() throws RemoteException {
+            L.d(TAG, "activateAgent() mNumber:"+mNumber++);
         }
 
         @Override
-        public void stopAgent() throws RemoteException {
-            L.d(TAG, "stopAgent() mNumber:"+mNumber++);
+        public void deactivateAgent() throws RemoteException {
+            L.d(TAG, "deactivateAgent() mNumber:"+mNumber++);
+        }
+
+        @Override
+        public void activateWakeWordDetector() throws RemoteException {
+            L.d(TAG, "activateWakeWordDetector() mNumber:"+mNumber++);
+        }
+
+        @Override
+        public void deactivateWakeWordDetector() throws RemoteException {
+            L.d(TAG, "deactivateWakeWordDetector() mNumber:"+mNumber++);
         }
 
         @Override
@@ -168,12 +182,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onAgentStatus(int status, String service) throws RemoteException {
             L.i(TAG,"onAgentStatus() status:"+status+", service:"+service);
-            L.d(TAG, "onAgentStatus() mNumber:"+mNumber++);
-        }
-
-        @Override
-        public void setWakeWordDetector(boolean enable) throws RemoteException {
-            L.i(TAG,"setWakeWordDetector() enable:"+enable);
         }
 
         @Override

@@ -1,16 +1,11 @@
 package com.skt.aicd.testservice;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-
-import com.skt.vii.service.IViiAgentControl;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
                 unbindTestService();
                 break;
             case R.id.button5:
-                startAgent();
+                activateAgent();
                 break;
             case R.id.button6:
-                stopAgent();
+                deactivateAgent();
                 break;
             case R.id.button7:
                 stopActivity();
@@ -76,19 +71,19 @@ public class MainActivity extends AppCompatActivity {
         stopService(getServiceIntent());
     }
 
-    private void stopAgent() {
-        L.d(TAG, "stopAgent()");
+    private void deactivateAgent() {
+        L.d(TAG, "deactivateAgent()");
         try {
-            TestBindService.clientControl.stopAgent();
+            TestBindService.clientControl.deactivateAgent();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void startAgent() {
-        L.d(TAG, "startAgent()");
+    private void activateAgent() {
+        L.d(TAG, "activateAgent()");
         try {
-            TestBindService.clientControl.startAgent();
+            TestBindService.clientControl.activateAgent();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,7 +101,11 @@ public class MainActivity extends AppCompatActivity {
     private void setWakeWordDetector(boolean enable) {
         L.d(TAG, "setWakeWordDetector() enable:"+enable);
         try {
-            TestBindService.clientControl.setWakeWordDetector(enable);
+            if (enable) {
+                TestBindService.clientControl.activateWakeWordDetector();
+            } else {
+                TestBindService.clientControl.deactivateWakeWordDetector();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
