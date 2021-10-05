@@ -18,24 +18,12 @@ public class TestBindService extends Service {
         private int mNumber = 0;
 
         @Override
-        public void activateAgent() throws RemoteException {
-            L.d(TAG, "activateAgent() mNumber:"+mNumber++);
-        }
-
-        @Override
-        public void deactivateAgent() throws RemoteException {
-            L.d(TAG, "deactivateAgent() mNumber:"+mNumber++);
-        }
-
-        @Override
-        public void activateWakeWordDetector() throws RemoteException {
-            L.i(TAG,"activateWakeWordDetector()");
+        public void startWakeupDetector() throws RemoteException {
 
         }
 
         @Override
-        public void deactivateWakeWordDetector() throws RemoteException {
-            L.i(TAG,"setWakeWordDetector()");
+        public void stopWakeupDetector() throws RemoteException {
 
         }
 
@@ -47,6 +35,16 @@ public class TestBindService extends Service {
         @Override
         public void onAgentStatus(int status, String service) throws RemoteException {
             L.i(TAG,"onAgentStatus() status:"+status+", service:"+service);
+        }
+
+        @Override
+        public void forceStartAgent() throws RemoteException {
+
+        }
+
+        @Override
+        public void forceStopAgent() throws RemoteException {
+
         }
 
         @Override

@@ -2,25 +2,15 @@ package com.skt.vii.service;
 
 interface IViiAgentControl {
 
-   /**
-     *  Agent를 활성한다.
+    /**
+     *  Agent의 Wakeup Detector를 활성한다.
      */
-    oneway void activateAgent();
+    oneway void startWakeupDetector();
 
     /**
-     *  Agent를 비활성한다.
+     *  Agent의 Wakeup Detector를 비활성한다.
      */
-    oneway void deactivateAgent();
-
-    /**
-     *  Agent의 Wake Word Detector를 활성한다.
-     */
-    oneway void activateWakeWordDetector();
-
-    /**
-     *  Agent의 Wake Word Detector를 비활성한다.
-     */
-    oneway void deactivateWakeWordDetector();
+    oneway void stopWakeupDetector();
 
     /**
      *  Agent의 내부 동작을 중지한다. (Media, TTS, Alert, etc)
@@ -41,4 +31,14 @@ interface IViiAgentControl {
      *  Agent의 내부 활동 상태값을 수신한다.
      */
     oneway void onAgentStatus(int status, String service);
+
+    /**
+     *  Agent를 활성한다. (NUGU_CALL 특화 기능 / 일반 케이스에서 사용하지 않음)
+     */
+    oneway void forceStartAgent();
+
+    /**
+     *  Agent를 비활성한다. (NUGU_CALL 특화 기능 / 일반 케이스에서 사용하지 않음)
+     */
+    oneway void forceStopAgent();
 }

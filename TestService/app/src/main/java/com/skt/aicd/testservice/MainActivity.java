@@ -39,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
                 unbindTestService();
                 break;
             case R.id.button5:
-                activateAgent();
+                forceStartAgent();
                 break;
             case R.id.button6:
-                deactivateAgent();
+                forceStopAgent();
                 break;
             case R.id.button7:
                 stopActivity();
@@ -71,19 +71,19 @@ public class MainActivity extends AppCompatActivity {
         stopService(getServiceIntent());
     }
 
-    private void deactivateAgent() {
-        L.d(TAG, "deactivateAgent()");
+    private void forceStopAgent() {
+        L.d(TAG, "forceStopAgent()");
         try {
-            TestBindService.clientControl.deactivateAgent();
+            TestBindService.clientControl.forceStopAgent();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void activateAgent() {
-        L.d(TAG, "activateAgent()");
+    private void forceStartAgent() {
+        L.d(TAG, "forceStartAgent()");
         try {
-            TestBindService.clientControl.activateAgent();
+            TestBindService.clientControl.forceStartAgent();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
         L.d(TAG, "setWakeWordDetector() enable:"+enable);
         try {
             if (enable) {
-                TestBindService.clientControl.activateWakeWordDetector();
+                TestBindService.clientControl.startWakeupDetector();
             } else {
-                TestBindService.clientControl.deactivateWakeWordDetector();
+                TestBindService.clientControl.stopWakeupDetector();
             }
         } catch (Exception e) {
             e.printStackTrace();
